@@ -109,7 +109,7 @@ Paste the folowing to create a database
 ```
 CREATE DATABASE nwit291;
 CREATE USER 'Admin'@'localhost' IDENTIFIED BY 'password1234';
-GRANT ALL PRIVILEGES ON nwit291_db.* TO 'Admin'@'localhost';
+GRANT ALL PRIVILEGES ON nwit291.* TO 'Admin'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
 ```
